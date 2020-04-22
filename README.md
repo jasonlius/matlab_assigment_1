@@ -1,6 +1,3 @@
-
-
-
 # Sensor-Fusion-and-Nonlinear-Filtering-SSY345
 
 This repository is for the course "Sensor Fusion and Nonlinear Filtering (SSY345)" at the Chalmers University of Technology.
