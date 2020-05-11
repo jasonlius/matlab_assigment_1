@@ -18,13 +18,30 @@ function [fx, Fx] = coordinatedTurnMotion(x, T)
 %   phi         heading
 %   omega       turn-rate
 
+px = x(1);                  % Initialize new variables as states variables for better documentation
+py = x(2);                  % Initialize new variables as states variables for better documentation
+v = x(3);                   % Initialize new variables as states variables for better documentation
+phi = x(4);                 % Initialize new variables as states variables for better documentation
+omega = x(5);               % Initialize new variables as states variables for better documentation
+
 % Your code for the motion model here
-% fx = ...
+fx = [                      % Motion Model
+      px + T*v*cos(phi);
+      py + T*v*sin(phi);
+      v;
+      phi + T*omega;
+      omega;
+      ];
 
 %Check if the Jacobian is requested by the calling function
 if nargout > 1
     % Your code for the motion model Jacobian here
-    % Fx = ...
+    Fx = [                  % Jacobian of the Motion Model
+          1, 0, T*cos(phi), -T*v*sin(phi), 0;
+          0, 1, T*sin(phi), T*v*cos(phi), 0;
+          0, 0, 1, 0, 0;
+          0, 0, 0, 1, T;
+          0, 0, 0, 0, 1;
+         ];
 end
-
 end

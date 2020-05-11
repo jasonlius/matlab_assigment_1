@@ -16,5 +16,19 @@ function [hx, Hx] = dualBearingMeasurement(x, s1, s2)
 % two states are X-position and Y-position.
 
 % Your code here
+n = size(x,1);      
+N = size(x,2);
+hx = zeros(2,N);        % Initialize measurement vector with zeros
+Hx = zeros(2,n);        % Initialize measurement model Jacobian with zeros
 
+hx(1:2,:) = [                  % Measurement vector
+     atan2(x(2,:)-s1(2),x(1,:)-s1(1));
+     atan2(x(2,:)-s2(2),x(1,:)-s2(1));
+	 ];
+        
+Hx(1:2,1:2) = [         % Measurement Model Jacobian
+     -(x(2)-s1(2))/( (x(1)-s1(1))^2 + (x(2)-s1(2))^2 ), (x(1)-s1(1))/( (x(1)-s1(1))^2 + (x(2)-s1(2))^2 );
+     -(x(2)-s2(2))/( (x(1)-s2(1))^2 + (x(2)-s2(2))^2 ), (x(1)-s2(1))/( (x(1)-s2(1))^2 + (x(2)-s2(2))^2 );
+     ];
+ 
 end

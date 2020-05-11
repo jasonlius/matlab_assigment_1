@@ -19,14 +19,28 @@ function [x, P] = nonLinKFprediction(x, P, f, Q, type)
 %   P           [n x n] predicted state covariance
 %
 
+    n = size(x,1);
     switch type
         case 'EKF'
             
             % Your EKF code here
+            [fx,Fx] = f(x);                 
+            x = fx;                                                 % Calculate Predicted Mean
+            P = Fx*P*Fx' + Q;                                       % Calculate Predicted Covariance
             
         case 'UKF'
     
             % Your UKF code here
+            [SP,W] = sigmaPoints(x, P, type);                       % Calculate Sigma Points
+            x = zeros(n,1);                                         % Initialize Predicted Mean
+            for i = 1:size(W,2)
+                x = x + f(SP(:,i))*W(i);                            % Calculate Predicted Mean
+            end
+            
+            P = Q;                                                  % Initialize Predicted Covariance
+            for i = 1:size(W,2)
+                P = P + (f(SP(:,i)) - x)*(f(SP(:,i)) - x).'*W(i);   % Calculate Predicted Covariance
+            end
             
             % Make sure the covariance matrix is semi-definite
             if min(eig(P))<=0
@@ -38,6 +52,16 @@ function [x, P] = nonLinKFprediction(x, P, f, Q, type)
         case 'CKF'
             
             % Your CKF code here
+            [SP,W] = sigmaPoints(x, P, type);                       % Calculate Sigma Points
+            x = zeros(n,1);                                         % Initialize Predicted Mean
+            for i = 1:size(W,2)
+                x = x + f(SP(:,i))*W(i);                            % Calculate Predicted Mean
+            end
+            
+            P = Q;                                                  % Initialize Predicted Covariance
+            for i = 1:size(W,2)
+                P = P + (f(SP(:,i)) - x)*(f(SP(:,i)) - x).'*W(i);   % Calculate Predicted Covariance
+            end
             
         otherwise
             error('Incorrect type of non-linear Kalman filter')

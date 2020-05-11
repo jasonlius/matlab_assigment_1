@@ -16,5 +16,10 @@ function Y = genNonLinearMeasurementSequence(X, h, R)
 %
 
 % Your code here
-
+Y = zeros(size(R,1),size(X,2)-1);                       % Initialize observation sequence
+r = (mvnrnd(zeros(size(R,1),1),R,size(X,2)-1))';        % Draw measurement noise from multidimensional Gaussian Distribution
+for iterator = 1:(size(X,2)-1)
+    [hx,~] = h(X(:,iterator+1));                        % Generate observations 
+    Y(:,iterator) = hx+r(:,iterator);                   % Generate observation sequence
+end
 end

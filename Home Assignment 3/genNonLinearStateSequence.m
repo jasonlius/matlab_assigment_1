@@ -19,5 +19,12 @@ function X = genNonLinearStateSequence(x_0, P_0, f, Q, N)
 %
 
 % Your code here
-
+X = zeros(size(x_0,1),N+1);                         % Initialize state vector sequence
+initial_state = (mvnrnd(x_0,P_0))';                 % Draw initial state from prior distribution
+q = (mvnrnd(zeros(size(Q,1),1),Q,N))';              % Draw samples from multidimensional Gaussian Distribution
+X(:,1) = initial_state;                             % Set initial state
+for iterator = 2:N+1
+    [fx,~] = f(X(:,iterator - 1));                  % Generate States
+    X(:,iterator) = fx + q(:,iterator - 1);         % Generate State Sequence
+end
 end
