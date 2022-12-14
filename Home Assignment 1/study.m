@@ -54,7 +54,7 @@ hold on
 legend('3\sigma_{approx}','mean_{approx}','Samples','location','northeast')
 hold off
 
-% %%Problem 2: 挪威雪的深度
+%%Problem 2: 挪威雪的深度
 Hafjell_mu_x = 1.1;
 Hafjell_sigma2_x = 0.5.^2;
 Anna_sigma2_r = 0.2.^2;
@@ -66,7 +66,7 @@ sigma2_r = 1.^2;
 [mu, Sigma]= jointGaussian(mu_x, sigma2_x, sigma2_r);
 
 xy_Hafjell_3_sigma = sigmaEllipse2D(Hafjell_mu, Hafjell_Sigma, 3)
-xy_sigma = sigmaEllipse2D(mu, Sigma, 3)
+xy_sigma = sigmaEllipse2D(mu, Sigma, 3);
 data_points = mvnrnd(Hafjell_mu, Hafjell_Sigma, 5000);
 data_point2s = mvnrnd(mu, Sigma, 5000);
 figure;
@@ -82,6 +82,42 @@ hold on
 plot(data_point2s(:,1),data_point2s(:,2),".","Color","black","LineWidth",2)
 axis equal
 hold off
+[x,y]=meshgrid(linspace(-8,8,80),linspace(-8,8,80));
+X=[x(:) y(:)];
+joint_pdf_ha = mvnpdf(X,Hafjell_mu',Hafjell_Sigma);
+joint_pdf_Kv = mvnpdf(X,mu',Sigma);
+% pdf_ha = normpdf(x,1,0.5.^2);
+% pdf_kv = normpdf(x,1.1,0.5.^2);
+% figure;
+% plot(x,pdf_ha,"Color","blue","LineWidth",1);grid
+% hold on
+% plot(x,pdf_kv,"Color","red","LineWidth",1);grid
+% hold on
+%  
+% legend('HAF_{深度分布}','KVI_{深度分布}')
+figure
+surf(x,y,reshape(joint_pdf_ha,80,80));
+
+figure
+surf(x,y,reshape(joint_pdf_Kv,80,80));
+hold off
+
+[mean_h,cov_h] = posteriorGaussian(1.1, 0.5.^2, 1, 0.2.^2);
+[mean_kv,cov_kv] = posteriorGaussian(1, 0.5.^2, 2, 1.^2);
+x_plot = linspace(-8,8,800);
+pdf_XH_YA = normpdf(x_plot,mean_h,sqrt(cov_h));
+pdf_XK_YE = normpdf(x_plot,mean_kv,sqrt(cov_kv));
+figure 
+plot(x_plot,pdf_XH_YA)
+hold on
+plot(x_plot,pdf_XK_YE)
+legend('P(x_{H}|y_{A})','P(x_{K}|y_{E})')
+hold off
+
+%%问题三：对高斯混合后验概率进行MMSE和MAP估计
+
+
+
 
 
 
