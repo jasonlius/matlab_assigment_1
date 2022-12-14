@@ -104,7 +104,7 @@ hold off
 
 [mean_h,cov_h] = posteriorGaussian(1.1, 0.5.^2, 1, 0.2.^2);
 [mean_kv,cov_kv] = posteriorGaussian(1, 0.5.^2, 2, 1.^2);
-x_plot = linspace(-8,8,800);
+x_plot = linspace(-30,30,800);
 pdf_XH_YA = normpdf(x_plot,mean_h,sqrt(cov_h));
 pdf_XK_YE = normpdf(x_plot,mean_kv,sqrt(cov_kv));
 figure 
@@ -115,9 +115,46 @@ legend('P(x_{H}|y_{A})','P(x_{K}|y_{E})')
 hold off
 
 %%问题三：对高斯混合后验概率进行MMSE和MAP估计
+portion_a = [0.1,0.9];
+portion_b = [0.49,0.51];
+portion_c = [0.4,0.6];
+
+pdf_a = portion_a*[normpdf(x_plot,1,sqrt(0.5));normpdf(x_plot,1,sqrt(9))];
+pdf_b = portion_b*[normpdf(x_plot,5,sqrt(2));normpdf(x_plot,-5,sqrt(2))];
+pdf_c = portion_c*[normpdf(x_plot,1,sqrt(2));normpdf(x_plot,2,sqrt(1))];
+
+MMSE_A = portion_a.*[1,1];
+MMSE_B = portion_b.*[5,-5];
+MMSE_C = portion_c.*[1,2];
+
+[max_A,index_A] = max(pdf_a);
+[max_B,index_B] = max(pdf_b);
+[max_C,index_C] = max(pdf_c);
+MAP_A= x_plot(index_A);
+MAP_B= x_plot(index_B);
+MAP_C= x_plot(index_C);
 
 
-
+figure
+plot(x_plot,pdf_a,LineWidth=2)
+hold on
+plot(x_plot,pdf_b,LineWidth=2)
+hold on
+plot(x_plot,pdf_c,LineWidth=2)
+hold on
+plot(MMSE_A,0,'*',LineWidth=2)
+hold on
+plot(MMSE_B,0,'*',LineWidth=2)
+hold on
+plot(MMSE_C,0,'*',LineWidth=2)
+hold on
+plot(MAP_A,0,'.',LineWidth=2)
+hold on
+plot(MAP_B,0,'.',LineWidth=2)
+hold on
+plot(MAP_C,0,'.',LineWidth=2)
+hold on
+legend("curve_{a}","curve_{b}","curve_{c}","MMSE_{a}","MMSE_{b}","MMSE_{c}","MAP_{a}","MAP_{b}","MAP_{c}")
 
 
 
